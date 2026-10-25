@@ -1,0 +1,11 @@
+<?php
+
+return [
+    'permissions.view' => ['name' => 'View permissions', 'group' => 'Access control', 'scope' => 'ANY'],
+    'roles.view' => ['name' => 'View roles', 'group' => 'Access control', 'scope' => 'ANY'],
+    'roles.manage' => ['name' => 'Manage roles', 'group' => 'Access control', 'scope' => 'ANY'],
+    'users.view' => ['name' => 'View users', 'group' => 'Access control', 'scope' => 'ANY'],
+    'users.manage' => ['name' => 'Manage users', 'group' => 'Access control', 'scope' => 'ANY'],
+    'users.assign_roles' => ['name' => 'Assign roles', 'group' => 'Access control', 'scope' => 'ANY'],
+    'audit.view' => ['name' => 'View audit log', 'group' => 'Access control', 'scope' => 'ANY'],
+];

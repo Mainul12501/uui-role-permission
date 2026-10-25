@@ -1,0 +1,11 @@
+laravel: '@testbench'
+
+providers:
+  - Mainul\UuiRolePermission\UuiRolePermissionServiceProvider
+
+env:
+  CACHE_STORE: array
+  CACHE_DRIVER: array
+
+workbench:
+  install: true

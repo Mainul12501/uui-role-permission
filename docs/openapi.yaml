@@ -1,0 +1,143 @@
+openapi: 3.0.3
+info:
+  title: UUI Role Permission API
+  version: 0.1.0
+  description: Optional Laravel management API. The host application must authorize management access.
+servers:
+  - url: /api/v1
+security:
+  - bearerAuth: []
+paths:
+  /permissions:
+    get:
+      summary: List permissions
+      parameters:
+        - in: query
+          name: group
+          schema: { type: string }
+        - in: query
+          name: search
+          schema: { type: string }
+        - in: query
+          name: per_page
+          schema: { type: integer, maximum: 100 }
+      responses:
+        '200': { description: Paginated permission list }
+        '401': { description: Unauthenticated }
+  /roles:
+    get:
+      summary: List roles
+      responses:
+        '200': { description: Paginated role list }
+        '401': { description: Unauthenticated }
+    post:
+      summary: Create a role
+      responses:
+        '201': { description: Role created }
+        '422': { description: Validation failed }
+  /roles/{role}:
+    parameters:
+      - in: path
+        name: role
+        required: true
+        schema: { type: string }
+    get:
+      summary: Read a role
+      responses:
+        '200': { description: Role details }
+        '404': { description: Role not found }
+    patch:
+      summary: Update a role
+      responses:
+        '200': { description: Role updated }
+        '409': { description: Protected role }
+        '422': { description: Validation failed }
+    delete:
+      summary: Delete an unused role
+      responses:
+        '204': { description: Role deleted }
+        '409': { description: Protected or assigned role }
+  /roles/{role}/permissions:
+    put:
+      summary: Replace a role's permission codes
+      parameters:
+        - in: path
+          name: role
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: Updated role permissions }
+        '409': { description: Protected role }
+        '422': { description: Validation failed }
+  /users/{user}/role-assignments:
+    get:
+      summary: List a user's role assignments
+      responses:
+        '200': { description: Paginated assignment list }
+    post:
+      summary: Assign a role to a user
+      responses:
+        '201': { description: Assignment created }
+        '422': { description: Validation or guardrail failed }
+  /users/{user}/role-assignments/{assignment}:
+    delete:
+      summary: Revoke a role assignment
+      responses:
+        '204': { description: Assignment revoked }
+        '409': { description: Guardrail prevented revocation }
+  /tenants/{tenant}/roles:
+    get:
+      summary: List roles belonging to a tenant
+      responses:
+        '200': { description: Paginated tenant role list }
+    post:
+      summary: Create a role for a tenant
+      responses:
+        '201': { description: Tenant role created }
+  /tenants/{tenant}/roles/{role}:
+    get:
+      summary: Read a tenant-visible role
+      responses:
+        '200': { description: Tenant custom or assignable platform role }
+        '403': { description: Missing tenant-scoped roles.view permission }
+    patch:
+      summary: Update a tenant-owned custom role
+      responses:
+        '200': { description: Role updated }
+        '409': { description: Guardrail or stale role conflict }
+    delete:
+      summary: Delete a tenant-owned custom role
+      responses:
+        '204': { description: Role deleted }
+        '409': { description: Protected or in-use role }
+  /tenants/{tenant}/roles/{role}/permissions:
+    put:
+      summary: Replace permissions on a tenant-owned role
+      responses:
+        '200': { description: Permissions replaced }
+        '422': { description: Unknown or scope-incompatible permission }
+  /tenants/{tenant}/members:
+    get:
+      summary: List tenant memberships
+      responses:
+        '200': { description: Paginated membership list }
+    post:
+      summary: Add or update a tenant membership
+      responses:
+        '201': { description: Membership created or updated }
+  /tenants/{tenant}/members/{user}:
+    delete:
+      summary: Remove a tenant membership
+      responses:
+        '204': { description: Membership removed }
+  /access-control/audit:
+    get:
+      summary: List access control audit records
+      responses:
+        '200': { description: Paginated audit list }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Sanctum token
